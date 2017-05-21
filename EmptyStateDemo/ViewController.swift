@@ -7,19 +7,28 @@
 //
 
 import UIKit
+import ReachabilitySwift
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var noInternetImageView: UIImageView!
+    
+    let rechability = Reachability()
+    var isRechable: Bool {
+        if let _rechability = rechability {
+            return _rechability.isReachable
+        }
+        return false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        try? rechability?.startNotifier()
+        NotificationCenter.default.addObserver(self, selector: #selector(networkChanged), name: ReachabilityChangedNotification, object: nil)
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func networkChanged() {
+        noInternetImageView.isHidden = isRechable
     }
-
-
 }
 
